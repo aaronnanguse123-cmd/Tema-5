@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_FastBurger_V5" targetNamespace="http://fastburger.example/bpmn" exporter="Camunda Modeler" exporterVersion="5.49.0">
+  <process id="Process_FastBurger_V5" name="Fast Burger - Venta de Hamburguesas" isExecutable="false">
+    <laneSet id="LaneSet_V5">
+      <lane id="Lane_Cocina_V5" name="Cocina">
+        <flowNodeRef>Gateway_Ingredientes_V5</flowNodeRef>
+        <flowNodeRef>VerificarIngredientes_V5</flowNodeRef>
+        <flowNodeRef>PrepararPedido_V5</flowNodeRef>
+      </lane>
+      <lane id="Lane_Cajero_V5" name="Empleado / Cajero">
+        <flowNodeRef>RegistrarPedido_V5</flowNodeRef>
+        <flowNodeRef>TomarPedido_V5</flowNodeRef>
+        <flowNodeRef>MostrarMenu_V5</flowNodeRef>
+        <flowNodeRef>OfrecerAlternativa_V5</flowNodeRef>
+        <flowNodeRef>CalcularTotal_V5</flowNodeRef>
+        <flowNodeRef>CobrarPedido_V5</flowNodeRef>
+      </lane>
+      <lane id="Lane_Cliente_V5" name="Cliente">
+        <flowNodeRef>Gateway_Confirma_V5</flowNodeRef>
+        <flowNodeRef>Gateway_Pago_V5</flowNodeRef>
+        <flowNodeRef>Start_V5</flowNodeRef>
+        <flowNodeRef>SolicitarMenu_V5</flowNodeRef>
+        <flowNodeRef>ConfirmarPedido_V5</flowNodeRef>
+        <flowNodeRef>ModificarPedido_V5</flowNodeRef>
+        <flowNodeRef>RealizarPago_V5</flowNodeRef>
+        <flowNodeRef>EntregarPedido_V5</flowNodeRef>
+        <flowNodeRef>OtroMetodo_V5</flowNodeRef>
+        <flowNodeRef>RecibirPedido_V5</flowNodeRef>
+        <flowNodeRef>End_V5</flowNodeRef>
+      </lane>
+    </laneSet>
+    <startEvent id="Start_V5" name="Inicio">
+      <outgoing>F01</outgoing>
+    </startEvent>
+    <exclusiveGateway id="Gateway_Confirma_V5" name="¿Cliente confirma?">
+      <incoming>F06</incoming>
+      <outgoing>F07</outgoing>
+      <outgoing>F08</outgoing>
+    </exclusiveGateway>
+    <exclusiveGateway id="Gateway_Ingredientes_V5" name="¿Hay ingredientes?">
+      <incoming>F10</incoming>
+      <outgoing>F11</outgoing>
+      <outgoing>F12</outgoing>
+    </exclusiveGateway>
+    <exclusiveGateway id="Gateway_Pago_V5" name="¿Pago aprobado?">
+      <incoming>F17</incoming>
+      <outgoing>F18</outgoing>
+      <outgoing>F19</outgoing>
+    </exclusiveGateway>
+    <endEvent id="End_V5" name="Fin">
+      <incoming>F22</incoming>
+    </endEvent>
+    <sequenceFlow id="F01" sourceRef="Start_V5" targetRef="SolicitarMenu_V5" />
+    <sequenceFlow id="F02" sourceRef="SolicitarMenu_V5" targetRef="MostrarMenu_V5" />
+    <sequenceFlow id="F03" sourceRef="MostrarMenu_V5" targetRef="TomarPedido_V5" />
+    <sequenceFlow id="F04" sourceRef="TomarPedido_V5" targetRef="RegistrarPedido_V5" />
+    <sequenceFlow id="F05" sourceRef="RegistrarPedido_V5" targetRef="ConfirmarPedido_V5" />
+    <sequenceFlow id="F06" sourceRef="ConfirmarPedido_V5" targetRef="Gateway_Confirma_V5" />
+    <sequenceFlow id="F07" name="No" sourceRef="Gateway_Confirma_V5" targetRef="ModificarPedido_V5" />
+    <sequenceFlow id="F08" name="Sí" sourceRef="Gateway_Confirma_V5" targetRef="VerificarIngredientes_V5" />
+    <sequenceFlow id="F09" sourceRef="ModificarPedido_V5" targetRef="VerificarIngredientes_V5" />
+    <sequenceFlow id="F10" sourceRef="VerificarIngredientes_V5" targetRef="Gateway_Ingredientes_V5" />
+    <sequenceFlow id="F11" name="No" sourceRef="Gateway_Ingredientes_V5" targetRef="OfrecerAlternativa_V5" />
+    <sequenceFlow id="F12" name="Sí" sourceRef="Gateway_Ingredientes_V5" targetRef="PrepararPedido_V5" />
+    <sequenceFlow id="F13" sourceRef="OfrecerAlternativa_V5" targetRef="TomarPedido_V5" />
+    <sequenceFlow id="F14" sourceRef="PrepararPedido_V5" targetRef="CalcularTotal_V5" />
+    <sequenceFlow id="F15" sourceRef="CalcularTotal_V5" targetRef="CobrarPedido_V5" />
+    <sequenceFlow id="F16" sourceRef="CobrarPedido_V5" targetRef="RealizarPago_V5" />
+    <sequenceFlow id="F17" sourceRef="RealizarPago_V5" targetRef="Gateway_Pago_V5" />
+    <sequenceFlow id="F18" name="No" sourceRef="Gateway_Pago_V5" targetRef="OtroMetodo_V5" />
+    <sequenceFlow id="F19" name="Sí" sourceRef="Gateway_Pago_V5" targetRef="EntregarPedido_V5" />
+    <sequenceFlow id="F20" sourceRef="OtroMetodo_V5" targetRef="RealizarPago_V5" />
+    <sequenceFlow id="F21" sourceRef="EntregarPedido_V5" targetRef="RecibirPedido_V5" />
+    <sequenceFlow id="F22" sourceRef="RecibirPedido_V5" targetRef="End_V5" />
+    <userTask id="RegistrarPedido_V5" name="Registrar pedido">
+      <incoming>F04</incoming>
+      <outgoing>F05</outgoing>
+    </userTask>
+    <userTask id="TomarPedido_V5" name="Tomar pedido">
+      <incoming>F03</incoming>
+      <incoming>F13</incoming>
+      <outgoing>F04</outgoing>
+    </userTask>
+    <userTask id="MostrarMenu_V5" name="Mostrar menú">
+      <incoming>F02</incoming>
+      <outgoing>F03</outgoing>
+    </userTask>
+    <userTask id="SolicitarMenu_V5" name="Solicitar menú">
+      <incoming>F01</incoming>
+      <outgoing>F02</outgoing>
+    </userTask>
+    <userTask id="ConfirmarPedido_V5" name="Confirmar pedido">
+      <incoming>F05</incoming>
+      <outgoing>F06</outgoing>
+    </userTask>
+    <userTask id="ModificarPedido_V5" name="Modificar pedido">
+      <incoming>F07</incoming>
+      <outgoing>F09</outgoing>
+    </userTask>
+    <userTask id="OfrecerAlternativa_V5" name="Ofrecer alternativa">
+      <incoming>F11</incoming>
+      <outgoing>F13</outgoing>
+    </userTask>
+    <userTask id="VerificarIngredientes_V5" name="Verificar ingredientes">
+      <incoming>F08</incoming>
+      <incoming>F09</incoming>
+      <outgoing>F10</outgoing>
+    </userTask>
+    <userTask id="PrepararPedido_V5" name="Preparar pedido">
+      <incoming>F12</incoming>
+      <outgoing>F14</outgoing>
+    </userTask>
+    <userTask id="RealizarPago_V5" name="Realizar pago">
+      <incoming>F16</incoming>
+      <incoming>F20</incoming>
+      <outgoing>F17</outgoing>
+    </userTask>
+    <userTask id="CalcularTotal_V5" name="Calcular total">
+      <incoming>F14</incoming>
+      <outgoing>F15</outgoing>
+    </userTask>
+    <userTask id="CobrarPedido_V5" name="Cobrar pedido">
+      <incoming>F15</incoming>
+      <outgoing>F16</outgoing>
+    </userTask>
+    <userTask id="EntregarPedido_V5" name="Entregar pedido">
+      <incoming>F19</incoming>
+      <outgoing>F21</outgoing>
+    </userTask>
+    <userTask id="OtroMetodo_V5" name="Solicitar otro método de pago">
+      <incoming>F18</incoming>
+      <outgoing>F20</outgoing>
+    </userTask>
+    <userTask id="RecibirPedido_V5" name="Recibir pedido">
+      <incoming>F21</incoming>
+      <outgoing>F22</outgoing>
+    </userTask>
+  </process>
+  <bpmndi:BPMNDiagram id="Diagram_FastBurger_V5">
+    <bpmndi:BPMNPlane id="Plane_FastBurger_V5" bpmnElement="Process_FastBurger_V5">
+      <bpmndi:BPMNShape id="Lane_Cocina_Shape_V5" bpmnElement="Lane_Cocina_V5" isHorizontal="true">
+        <dc:Bounds x="160" y="530" width="2300" height="240" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Cajero_Shape_V5" bpmnElement="Lane_Cajero_V5" isHorizontal="true">
+        <dc:Bounds x="160" y="305" width="2300" height="225" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Cliente_Shape_V5" bpmnElement="Lane_Cliente_V5" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="2300" height="225" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_Start_V5" bpmnElement="Start_V5">
+        <dc:Bounds x="200" y="170" width="45" height="45" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="210" y="224" width="26" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_GConfirma_V5" bpmnElement="Gateway_Confirma_V5" isMarkerVisible="true">
+        <dc:Bounds x="1060" y="167" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1060" y="129.5" width="49" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_GIngredientes_V5" bpmnElement="Gateway_Ingredientes_V5" isMarkerVisible="true">
+        <dc:Bounds x="1330" y="617" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1322" y="667" width="67" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_GPago_V5" bpmnElement="Gateway_Pago_V5" isMarkerVisible="true">
+        <dc:Bounds x="2055" y="168" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2035" y="153" width="89" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0zl3nli_di" bpmnElement="RegistrarPedido_V5">
+        <dc:Bounds x="800" y="375" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0m434ay_di" bpmnElement="TomarPedido_V5">
+        <dc:Bounds x="630" y="375" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1m6mo4q_di" bpmnElement="MostrarMenu_V5">
+        <dc:Bounds x="460" y="375" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0vhw4mq_di" bpmnElement="SolicitarMenu_V5">
+        <dc:Bounds x="275" y="150" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1rhg5md_di" bpmnElement="ConfirmarPedido_V5">
+        <dc:Bounds x="890" y="150" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_04uq636_di" bpmnElement="ModificarPedido_V5">
+        <dc:Bounds x="1140" y="120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_02liu41_di" bpmnElement="OfrecerAlternativa_V5">
+        <dc:Bounds x="1162" y="387" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1kkuk6s_di" bpmnElement="VerificarIngredientes_V5">
+        <dc:Bounds x="1140" y="600" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1d0jly4_di" bpmnElement="PrepararPedido_V5">
+        <dc:Bounds x="1430" y="600" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0y8e3qt_di" bpmnElement="RealizarPago_V5">
+        <dc:Bounds x="1857" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_13jbjjv_di" bpmnElement="CalcularTotal_V5">
+        <dc:Bounds x="1630" y="375" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0bmt8ch_di" bpmnElement="CobrarPedido_V5">
+        <dc:Bounds x="1800" y="375" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0s0qczq_di" bpmnElement="EntregarPedido_V5">
+        <dc:Bounds x="2150" y="120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0pxtd6y_di" bpmnElement="OtroMetodo_V5">
+        <dc:Bounds x="2000" y="245" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0f9hcfv_di" bpmnElement="RecibirPedido_V5">
+        <dc:Bounds x="2310" y="120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S_End_V5" bpmnElement="End_V5">
+        <dc:Bounds x="2385" y="227" width="45" height="45" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2400" y="283" width="16" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="E01" bpmnElement="F01">
+        <di:waypoint x="245" y="192" />
+        <di:waypoint x="275" y="192" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E02" bpmnElement="F02">
+        <di:waypoint x="342" y="230" />
+        <di:waypoint x="342" y="417" />
+        <di:waypoint x="460" y="417" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E03" bpmnElement="F03">
+        <di:waypoint x="560" y="417" />
+        <di:waypoint x="630" y="417" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E13" bpmnElement="F13">
+        <di:waypoint x="1162" y="429" />
+        <di:waypoint x="1030" y="429" />
+        <di:waypoint x="1030" y="485" />
+        <di:waypoint x="697" y="485" />
+        <di:waypoint x="697" y="455" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E04" bpmnElement="F04">
+        <di:waypoint x="730" y="417" />
+        <di:waypoint x="800" y="417" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E05" bpmnElement="F05">
+        <di:waypoint x="872" y="375" />
+        <di:waypoint x="872" y="305" />
+        <di:waypoint x="963" y="305" />
+        <di:waypoint x="963" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E06" bpmnElement="F06">
+        <di:waypoint x="990" y="192" />
+        <di:waypoint x="1060" y="192" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E07" bpmnElement="F07">
+        <di:waypoint x="1110" y="192" />
+        <di:waypoint x="1125" y="192" />
+        <di:waypoint x="1125" y="160" />
+        <di:waypoint x="1140" y="160" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1117" y="143" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E08" bpmnElement="F08">
+        <di:waypoint x="1085" y="217" />
+        <di:waypoint x="1085" y="642" />
+        <di:waypoint x="1140" y="642" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1095" y="420" width="11" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E09" bpmnElement="F09">
+        <di:waypoint x="1212" y="200" />
+        <di:waypoint x="1212" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E10" bpmnElement="F10">
+        <di:waypoint x="1240" y="642" />
+        <di:waypoint x="1330" y="642" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E11" bpmnElement="F11">
+        <di:waypoint x="1355" y="617" />
+        <di:waypoint x="1355" y="505" />
+        <di:waypoint x="1239" y="505" />
+        <di:waypoint x="1239" y="467" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1290" y="480" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E12" bpmnElement="F12">
+        <di:waypoint x="1380" y="642" />
+        <di:waypoint x="1430" y="642" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1400" y="617" width="11" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E14" bpmnElement="F14">
+        <di:waypoint x="1530" y="642" />
+        <di:waypoint x="1600" y="642" />
+        <di:waypoint x="1600" y="417" />
+        <di:waypoint x="1630" y="417" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E15" bpmnElement="F15">
+        <di:waypoint x="1730" y="417" />
+        <di:waypoint x="1800" y="417" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E16" bpmnElement="F16">
+        <di:waypoint x="1900" y="385" />
+        <di:waypoint x="1900" y="299" />
+        <di:waypoint x="1930" y="299" />
+        <di:waypoint x="1930" y="217" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E18" bpmnElement="F18">
+        <di:waypoint x="2080" y="218" />
+        <di:waypoint x="2080" y="232" />
+        <di:waypoint x="2055" y="232" />
+        <di:waypoint x="2055" y="245" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2040" y="203" width="27" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E20" bpmnElement="F20">
+        <di:waypoint x="2000" y="277" />
+        <di:waypoint x="1930" y="277" />
+        <di:waypoint x="1930" y="217" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E22" bpmnElement="F22">
+        <di:waypoint x="2410" y="190" />
+        <di:waypoint x="2410" y="227" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E17" bpmnElement="F17">
+        <di:waypoint x="1957" y="179" />
+        <di:waypoint x="2029" y="179" />
+        <di:waypoint x="2029" y="193" />
+        <di:waypoint x="2055" y="193" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E19" bpmnElement="F19">
+        <di:waypoint x="2105" y="193" />
+        <di:waypoint x="2128" y="193" />
+        <di:waypoint x="2128" y="160" />
+        <di:waypoint x="2150" y="160" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2093" y="173" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E21" bpmnElement="F21">
+        <di:waypoint x="2250" y="160" />
+        <di:waypoint x="2310" y="160" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

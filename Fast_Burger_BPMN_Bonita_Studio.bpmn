@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+ xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+ xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+ xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+ id="Definitions_FastBurger_Bonita"
+ targetNamespace="http://fastburger.example/bonita">
+
+  <process id="FastBurgerProcess" name="Fast Burger - Venta de Hamburguesas" isExecutable="true">
+
+    <laneSet id="LaneSet_FastBurger">
+      <lane id="Lane_Cliente" name="Cliente">
+        <flowNodeRef>StartEvent</flowNodeRef>
+        <flowNodeRef>SolicitarMenu</flowNodeRef>
+        <flowNodeRef>ConfirmarPedido</flowNodeRef>
+        <flowNodeRef>GatewayConfirma</flowNodeRef>
+        <flowNodeRef>ModificarPedido</flowNodeRef>
+        <flowNodeRef>RealizarPago</flowNodeRef>
+        <flowNodeRef>GatewayPago</flowNodeRef>
+        <flowNodeRef>OtroMetodoPago</flowNodeRef>
+        <flowNodeRef>EntregarPedido</flowNodeRef>
+        <flowNodeRef>RecibirPedido</flowNodeRef>
+        <flowNodeRef>EndEvent</flowNodeRef>
+      </lane>
+      <lane id="Lane_Cajero" name="Empleado / Cajero">
+        <flowNodeRef>MostrarMenu</flowNodeRef>
+        <flowNodeRef>TomarPedido</flowNodeRef>
+        <flowNodeRef>RegistrarPedido</flowNodeRef>
+        <flowNodeRef>OfrecerAlternativa</flowNodeRef>
+        <flowNodeRef>CalcularTotal</flowNodeRef>
+        <flowNodeRef>CobrarPedido</flowNodeRef>
+      </lane>
+      <lane id="Lane_Cocina" name="Cocina">
+        <flowNodeRef>VerificarIngredientes</flowNodeRef>
+        <flowNodeRef>GatewayIngredientes</flowNodeRef>
+        <flowNodeRef>PrepararPedido</flowNodeRef>
+      </lane>
+    </laneSet>
+
+    <startEvent id="StartEvent" name="Inicio"><outgoing>Flow_01</outgoing></startEvent>
+    <task id="SolicitarMenu" name="Solicitar menú"><incoming>Flow_01</incoming><outgoing>Flow_02</outgoing></task>
+    <task id="MostrarMenu" name="Mostrar menú"><incoming>Flow_02</incoming><outgoing>Flow_03</outgoing></task>
+    <task id="TomarPedido" name="Tomar pedido"><incoming>Flow_03</incoming><incoming>Flow_13</incoming><outgoing>Flow_04</outgoing></task>
+    <task id="RegistrarPedido" name="Registrar pedido"><incoming>Flow_04</incoming><outgoing>Flow_05</outgoing></task>
+    <task id="ConfirmarPedido" name="Confirmar pedido"><incoming>Flow_05</incoming><outgoing>Flow_06</outgoing></task>
+
+    <exclusiveGateway id="GatewayConfirma" name="¿Cliente confirma?">
+      <incoming>Flow_06</incoming><outgoing>Flow_07</outgoing><outgoing>Flow_08</outgoing>
+    </exclusiveGateway>
+
+    <task id="ModificarPedido" name="Modificar pedido"><incoming>Flow_07</incoming><outgoing>Flow_09</outgoing></task>
+    <task id="VerificarIngredientes" name="Verificar ingredientes">
+      <incoming>Flow_08</incoming><incoming>Flow_09</incoming><outgoing>Flow_10</outgoing>
+    </task>
+
+    <exclusiveGateway id="GatewayIngredientes" name="¿Hay ingredientes?">
+      <incoming>Flow_10</incoming><outgoing>Flow_11</outgoing><outgoing>Flow_12</outgoing>
+    </exclusiveGateway>
+
+    <task id="OfrecerAlternativa" name="Ofrecer alternativa"><incoming>Flow_11</incoming><outgoing>Flow_13</outgoing></task>
+    <task id="PrepararPedido" name="Preparar pedido"><incoming>Flow_12</incoming><outgoing>Flow_14</outgoing></task>
+    <task id="CalcularTotal" name="Calcular total"><incoming>Flow_14</incoming><outgoing>Flow_15</outgoing></task>
+    <task id="CobrarPedido" name="Cobrar pedido"><incoming>Flow_15</incoming><outgoing>Flow_16</outgoing></task>
+    <task id="RealizarPago" name="Realizar pago"><incoming>Flow_16</incoming><outgoing>Flow_17</outgoing></task>
+
+    <exclusiveGateway id="GatewayPago" name="¿Pago aprobado?">
+      <incoming>Flow_17</incoming><outgoing>Flow_18</outgoing><outgoing>Flow_19</outgoing>
+    </exclusiveGateway>
+
+    <task id="OtroMetodoPago" name="Solicitar otro método de pago"><incoming>Flow_18</incoming><outgoing>Flow_20</outgoing></task>
+    <task id="EntregarPedido" name="Entregar pedido"><incoming>Flow_19</incoming><outgoing>Flow_21</outgoing></task>
+    <task id="RecibirPedido" name="Recibir pedido"><incoming>Flow_21</incoming><outgoing>Flow_22</outgoing></task>
+    <endEvent id="EndEvent" name="Fin"><incoming>Flow_22</incoming></endEvent>
+
+    <sequenceFlow id="Flow_01" sourceRef="StartEvent" targetRef="SolicitarMenu"/>
+    <sequenceFlow id="Flow_02" sourceRef="SolicitarMenu" targetRef="MostrarMenu"/>
+    <sequenceFlow id="Flow_03" sourceRef="MostrarMenu" targetRef="TomarPedido"/>
+    <sequenceFlow id="Flow_04" sourceRef="TomarPedido" targetRef="RegistrarPedido"/>
+    <sequenceFlow id="Flow_05" sourceRef="RegistrarPedido" targetRef="ConfirmarPedido"/>
+    <sequenceFlow id="Flow_06" sourceRef="ConfirmarPedido" targetRef="GatewayConfirma"/>
+    <sequenceFlow id="Flow_07" name="No" sourceRef="GatewayConfirma" targetRef="ModificarPedido"/>
+    <sequenceFlow id="Flow_08" name="Sí" sourceRef="GatewayConfirma" targetRef="VerificarIngredientes"/>
+    <sequenceFlow id="Flow_09" sourceRef="ModificarPedido" targetRef="VerificarIngredientes"/>
+    <sequenceFlow id="Flow_10" sourceRef="VerificarIngredientes" targetRef="GatewayIngredientes"/>
+    <sequenceFlow id="Flow_11" name="No" sourceRef="GatewayIngredientes" targetRef="OfrecerAlternativa"/>
+    <sequenceFlow id="Flow_12" name="Sí" sourceRef="GatewayIngredientes" targetRef="PrepararPedido"/>
+    <sequenceFlow id="Flow_13" sourceRef="OfrecerAlternativa" targetRef="TomarPedido"/>
+    <sequenceFlow id="Flow_14" sourceRef="PrepararPedido" targetRef="CalcularTotal"/>
+    <sequenceFlow id="Flow_15" sourceRef="CalcularTotal" targetRef="CobrarPedido"/>
+    <sequenceFlow id="Flow_16" sourceRef="CobrarPedido" targetRef="RealizarPago"/>
+    <sequenceFlow id="Flow_17" sourceRef="RealizarPago" targetRef="GatewayPago"/>
+    <sequenceFlow id="Flow_18" name="No" sourceRef="GatewayPago" targetRef="OtroMetodoPago"/>
+    <sequenceFlow id="Flow_19" name="Sí" sourceRef="GatewayPago" targetRef="EntregarPedido"/>
+    <sequenceFlow id="Flow_20" sourceRef="OtroMetodoPago" targetRef="RealizarPago"/>
+    <sequenceFlow id="Flow_21" sourceRef="EntregarPedido" targetRef="RecibirPedido"/>
+    <sequenceFlow id="Flow_22" sourceRef="RecibirPedido" targetRef="EndEvent"/>
+  </process>
+
+  <bpmndi:BPMNDiagram id="Diagram_FastBurger">
+    <bpmndi:BPMNPlane id="Plane_FastBurger" bpmnElement="FastBurgerProcess">
+
+      <bpmndi:BPMNShape id="Lane_Cliente_DI" bpmnElement="Lane_Cliente" isHorizontal="true">
+        <dc:Bounds x="30" y="30" width="2300" height="225"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Cajero_DI" bpmnElement="Lane_Cajero" isHorizontal="true">
+        <dc:Bounds x="30" y="255" width="2300" height="225"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Cocina_DI" bpmnElement="Lane_Cocina" isHorizontal="true">
+        <dc:Bounds x="30" y="480" width="2300" height="240"/>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Start_DI" bpmnElement="StartEvent"><dc:Bounds x="70" y="120" width="45" height="45"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Solicitar_DI" bpmnElement="SolicitarMenu"><dc:Bounds x="145" y="100" width="135" height="85"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Confirmar_DI" bpmnElement="ConfirmarPedido"><dc:Bounds x="760" y="100" width="145" height="85"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GC_DI" bpmnElement="GatewayConfirma" isMarkerVisible="true"><dc:Bounds x="930" y="117" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Modificar_DI" bpmnElement="ModificarPedido"><dc:Bounds x="1010" y="70" width="145" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Pagar_DI" bpmnElement="RealizarPago"><dc:Bounds x="1780" y="100" width="145" height="85"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GP_DI" bpmnElement="GatewayPago" isMarkerVisible="true"><dc:Bounds x="1950" y="117" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Otro_DI" bpmnElement="OtroMetodoPago"><dc:Bounds x="1870" y="195" width="190" height="65"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Entregar_DI" bpmnElement="EntregarPedido"><dc:Bounds x="2030" y="70" width="140" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Recibir_DI" bpmnElement="RecibirPedido"><dc:Bounds x="2200" y="70" width="140" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_DI" bpmnElement="EndEvent"><dc:Bounds x="2255" y="165" width="45" height="45"/></bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Mostrar_DI" bpmnElement="MostrarMenu"><dc:Bounds x="330" y="325" width="135" height="85"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Tomar_DI" bpmnElement="TomarPedido"><dc:Bounds x="500" y="325" width="135" height="85"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Registrar_DI" bpmnElement="RegistrarPedido"><dc:Bounds x="670" y="325" width="145" height="85"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Alternativa_DI" bpmnElement="OfrecerAlternativa"><dc:Bounds x="1010" y="325" width="155" height="85"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Calcular_DI" bpmnElement="CalcularTotal"><dc:Bounds x="1500" y="325" width="145" height="85"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Cobrar_DI" bpmnElement="CobrarPedido"><dc:Bounds x="1670" y="325" width="145" height="85"/></bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Verificar_DI" bpmnElement="VerificarIngredientes"><dc:Bounds x="1010" y="550" width="155" height="85"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="GI_DI" bpmnElement="GatewayIngredientes" isMarkerVisible="true"><dc:Bounds x="1200" y="567" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Preparar_DI" bpmnElement="PrepararPedido"><dc:Bounds x="1300" y="550" width="145" height="85"/></bpmndi:BPMNShape>
+
+      <bpmndi:BPMNEdge id="E01" bpmnElement="Flow_01"><di:waypoint x="115" y="142"/><di:waypoint x="145" y="142"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E02" bpmnElement="Flow_02"><di:waypoint x="212" y="185"/><di:waypoint x="212" y="367"/><di:waypoint x="330" y="367"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E03" bpmnElement="Flow_03"><di:waypoint x="465" y="367"/><di:waypoint x="500" y="367"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E04" bpmnElement="Flow_04"><di:waypoint x="635" y="367"/><di:waypoint x="670" y="367"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E05" bpmnElement="Flow_05"><di:waypoint x="742" y="325"/><di:waypoint x="742" y="142"/><di:waypoint x="760" y="142"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E06" bpmnElement="Flow_06"><di:waypoint x="905" y="142"/><di:waypoint x="930" y="142"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E07" bpmnElement="Flow_07"><di:waypoint x="955" y="117"/><di:waypoint x="955" y="110"/><di:waypoint x="1010" y="110"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E08" bpmnElement="Flow_08"><di:waypoint x="980" y="142"/><di:waypoint x="990" y="142"/><di:waypoint x="990" y="592"/><di:waypoint x="1010" y="592"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E09" bpmnElement="Flow_09"><di:waypoint x="1082" y="150"/><di:waypoint x="1082" y="550"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E10" bpmnElement="Flow_10"><di:waypoint x="1165" y="592"/><di:waypoint x="1200" y="592"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E11" bpmnElement="Flow_11"><di:waypoint x="1225" y="567"/><di:waypoint x="1225" y="455"/><di:waypoint x="1087" y="455"/><di:waypoint x="1087" y="410"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E12" bpmnElement="Flow_12"><di:waypoint x="1250" y="592"/><di:waypoint x="1300" y="592"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E13" bpmnElement="Flow_13"><di:waypoint x="1010" y="367"/><di:waypoint x="900" y="367"/><di:waypoint x="900" y="435"/><di:waypoint x="567" y="435"/><di:waypoint x="567" y="410"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E14" bpmnElement="Flow_14"><di:waypoint x="1445" y="592"/><di:waypoint x="1470" y="592"/><di:waypoint x="1470" y="367"/><di:waypoint x="1500" y="367"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E15" bpmnElement="Flow_15"><di:waypoint x="1645" y="367"/><di:waypoint x="1670" y="367"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E16" bpmnElement="Flow_16"><di:waypoint x="1815" y="325"/><di:waypoint x="1815" y="142"/><di:waypoint x="1780" y="142"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E17" bpmnElement="Flow_17"><di:waypoint x="1925" y="142"/><di:waypoint x="1950" y="142"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E18" bpmnElement="Flow_18"><di:waypoint x="1975" y="167"/><di:waypoint x="1975" y="195"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E19" bpmnElement="Flow_19"><di:waypoint x="2000" y="142"/><di:waypoint x="2030" y="110"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E20" bpmnElement="Flow_20"><di:waypoint x="1870" y="227"/><di:waypoint x="1740" y="227"/><di:waypoint x="1740" y="142"/><di:waypoint x="1780" y="142"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E21" bpmnElement="Flow_21"><di:waypoint x="2170" y="110"/><di:waypoint x="2200" y="110"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E22" bpmnElement="Flow_22"><di:waypoint x="2340" y="110"/><di:waypoint x="2340" y="187"/><di:waypoint x="2300" y="187"/></bpmndi:BPMNEdge>
+
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
